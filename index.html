@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IRON CIRCUIT — Corporate Mech Combat League 2097</title>
+  <meta name="description" content="Year 2097. A corporate mech fighting league settles disputes through mechanised combat. Five pilots. Five machines. Four arenas. One Circuit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #070a0c;
+      --panel: #11181d;
+      --steel: #34434b;
+      --text: #d8e1df;
+      --muted: #7f9795;
+      --accent: #d8902f;
+      --accent-hot: #f2b34d;
+      --danger: #d64242;
+      --font-display: "Teko", sans-serif;
+      --font-body: "IBM Plex Sans", sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--text);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin-inline: auto;
+    }
+
+    /* —— Top bar —— */
+    .top {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(to bottom, rgba(7, 10, 12, 0.92), rgba(7, 10, 12, 0));
+      pointer-events: none;
+    }
+    .top a, .top nav { pointer-events: auto; }
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .brand span { color: var(--accent); }
+    .top nav {
+      display: flex;
+      gap: 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .top nav a:hover { color: var(--accent); }
+
+    /* —— Hero —— */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      align-items: end;
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        #0a1014
+        url("media/arenas/iron_city.jpg") center / cover no-repeat;
+      transform: scale(1.04);
+      animation: hero-drift 28s ease-in-out infinite alternate;
+    }
+    @keyframes hero-drift {
+      from { transform: scale(1.04) translate3d(0, 0, 0); }
+      to { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+    }
+    .hero-shade {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(7, 10, 12, 0.92) 0%, rgba(7, 10, 12, 0.55) 48%, rgba(7, 10, 12, 0.25) 100%),
+        linear-gradient(to top, rgba(7, 10, 12, 0.95) 0%, transparent 42%);
+    }
+    .hero-inner {
+      padding: 7rem 0 5.5rem;
+      max-width: 38rem;
+    }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(4.2rem, 14vw, 7.5rem);
+      line-height: 0.88;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-lead {
+      font-size: 1.08rem;
+      color: var(--muted);
+      max-width: 32rem;
+      margin-bottom: 1.8rem;
+    }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.7rem 1.25rem;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-fill {
+      background: var(--accent);
+      color: #120e08;
+    }
+    .btn-fill:hover { background: var(--accent-hot); }
+    .btn-ghost {
+      border-color: var(--steel);
+      color: var(--text);
+      background: rgba(17, 24, 29, 0.55);
+    }
+    .btn-ghost:hover { border-color: var(--accent); }
+
+    /* —— Sections —— */
+    section { padding: 5.5rem 0; }
+    .section-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 0.85rem;
+    }
+    .section-lead {
+      color: var(--muted);
+      max-width: 36rem;
+      margin-bottom: 2.4rem;
+    }
+
+    .league {
+      background: var(--panel);
+      border-block: 1px solid rgba(52, 67, 75, 0.55);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 2.2rem;
+    }
+    .stat {
+      border-left: 3px solid var(--accent);
+      padding: 0.35rem 0 0.35rem 0.9rem;
+    }
+    .stat strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+    .stat span {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* —— Pilots —— */
+    .pilots-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.85rem;
+    }
+    .pilot {
+      position: relative;
+      background: var(--panel);
+      border: 1px solid rgba(52, 67, 75, 0.7);
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .pilot:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .pilot-shot {
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      width: 100%;
+      filter: saturate(0.92) contrast(1.05);
+      transition: transform 0.45s ease;
+    }
+    .pilot:hover .pilot-shot { transform: scale(1.04); }
+    .pilot-meta {
+      padding: 0.85rem 0.9rem 1rem;
+      border-top: 1px solid rgba(52, 67, 75, 0.7);
+    }
+    .pilot-call {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.15rem;
+    }
+    .pilot-name {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .pilot-robot {
+      margin-top: 0.35rem;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .pilot-corp {
+      margin-top: 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel);
+    }
+
+    /* —— Arenas —— */
+    .arenas { background: linear-gradient(180deg, var(--ink), #0c1216 40%, var(--ink)); }
+    .arena-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .arena {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      min-height: 220px;
+      border: 1px solid rgba(52, 67, 75, 0.7);
+      background: var(--panel);
+      overflow: hidden;
+    }
+    .arena:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+    .arena:nth-child(even) .arena-copy { order: -1; }
+    .arena-img {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .arena:hover .arena-img { transform: scale(1.03); }
+    .arena-copy {
+      padding: 1.6rem 1.7rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .arena-num {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .arena-copy h3 {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 0.45rem;
+    }
+    .arena-loc {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+    .arena-copy p { color: var(--muted); font-size: 0.95rem; }
+
+    /* —— Modes —— */
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .mode {
+      padding: 1.5rem 1.4rem;
+      border-top: 3px solid var(--accent);
+      background: var(--panel);
+      border-right: 1px solid rgba(52, 67, 75, 0.55);
+      border-bottom: 1px solid rgba(52, 67, 75, 0.55);
+      border-left: 1px solid rgba(52, 67, 75, 0.55);
+    }
+    .mode h3 {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .mode p { color: var(--muted); font-size: 0.94rem; }
+
+    /* —— News strip —— */
+    .icn {
+      position: relative;
+      overflow: hidden;
+      background: #e6d7a8;
+      color: #16207a;
+      border-block: 4px solid #2b3a9e;
+    }
+    .icn-inner {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      padding-block: 2.2rem;
+    }
+    .icn img {
+      width: 180px;
+      border: 3px solid #2b3a9e;
+      background: #111;
+    }
+    .icn-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #b8322c;
+      margin-bottom: 0.35rem;
+    }
+    .icn h2 {
+      font-family: var(--font-display);
+      font-size: 2.3rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #16207a;
+      line-height: 1;
+      margin-bottom: 0.55rem;
+    }
+    .icn p {
+      color: #2b3a9e;
+      max-width: 40rem;
+      font-size: 0.98rem;
+    }
+
+    /* —— Footer —— */
+    footer {
+      padding: 2.5rem 0 7.5rem;
+      border-top: 1px solid rgba(52, 67, 75, 0.55);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+    footer strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.14em;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    /* —— Music dock —— */
+    .deck {
+      position: fixed;
+      right: 1.1rem;
+      bottom: 1.1rem;
+      z-index: 50;
+      width: min(360px, calc(100vw - 1.6rem));
+      background: linear-gradient(160deg, #171f25 0%, #0d1216 100%);
+      border: 1px solid rgba(216, 144, 47, 0.45);
+      box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 0.85rem 0.95rem 0.95rem;
+    }
+    .deck::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hot), transparent);
+    }
+    .deck-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.55rem;
+    }
+    .deck-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .deck-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--accent-hot);
+    }
+    .deck-live {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--danger);
+      opacity: 0.35;
+      transition: opacity 0.2s ease;
+    }
+    .deck.is-playing .deck-live { opacity: 1; animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    .deck-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 28px;
+      margin-bottom: 0.7rem;
+    }
+    .deck-bars span {
+      flex: 1;
+      height: 20%;
+      background: var(--steel);
+      transform-origin: bottom;
+      transition: background 0.2s ease;
+    }
+    .deck.is-playing .deck-bars span {
+      background: var(--accent);
+      animation: bar 0.7s ease-in-out infinite alternate;
+    }
+    .deck.is-playing .deck-bars span:nth-child(2) { animation-duration: 0.55s; animation-delay: 0.05s; }
+    .deck.is-playing .deck-bars span:nth-child(3) { animation-duration: 0.8s; animation-delay: 0.1s; }
+    .deck.is-playing .deck-bars span:nth-child(4) { animation-duration: 0.45s; animation-delay: 0.02s; }
+    .deck.is-playing .deck-bars span:nth-child(5) { animation-duration: 0.65s; animation-delay: 0.12s; }
+    .deck.is-playing .deck-bars span:nth-child(6) { animation-duration: 0.5s; animation-delay: 0.08s; }
+    .deck.is-playing .deck-bars span:nth-child(7) { animation-duration: 0.75s; animation-delay: 0.15s; }
+    .deck.is-playing .deck-bars span:nth-child(8) { animation-duration: 0.6s; animation-delay: 0.04s; }
+    @keyframes bar {
+      from { height: 18%; }
+      to { height: 100%; }
+    }
+    .deck-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+    }
+    .deck-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      min-height: 2.5rem;
+      padding: 0.45rem 0.5rem;
+      border: 1px solid var(--steel);
+      background: rgba(7, 10, 12, 0.65);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+    .deck-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-hot);
+    }
+    .deck-btn.is-on {
+      border-color: var(--accent);
+      background: rgba(216, 144, 47, 0.15);
+      color: var(--accent-hot);
+    }
+    .deck-btn svg { width: 14px; height: 14px; fill: currentColor; }
+    .deck-hint {
+      margin-top: 0.55rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      min-height: 1em;
+    }
+    .deck.needs-gesture .deck-hint { color: var(--accent-hot); }
+
+    @media (max-width: 980px) {
+      .pilots-grid { grid-template-columns: repeat(3, 1fr); }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .modes-grid { grid-template-columns: 1fr; }
+      .arena, .arena:nth-child(even) {
+        grid-template-columns: 1fr;
+      }
+      .arena:nth-child(even) .arena-copy { order: 0; }
+      .icn-inner { grid-template-columns: 1fr; }
+      .icn img { width: 140px; }
+      .top nav { display: none; }
+    }
+    @media (max-width: 640px) {
+      .pilots-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-inner { padding-bottom: 7rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#top">IRON <span>CIRCUIT</span></a>
+    <nav aria-label="Primary">
+      <a href="#pilots">Pilots</a>
+      <a href="#arenas">Arenas</a>
+      <a href="#modes">Modes</a>
+      <a href="#icn">ICN</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <p class="eyebrow">Corporate Mech Combat League // 2097</p>
+        <h1>IRON<br><em>CIRCUIT</em></h1>
+        <p class="hero-lead">
+          Pilots enter. Titans fight. Five sponsored machines settle corporate disputes
+          in contact combat — no guns, just steel, timing, and whoever still stands.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-fill" href="#pilots">Meet the roster</a>
+          <a class="btn btn-ghost" href="#modes">How you play</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="league" id="league">
+      <div class="wrap">
+        <p class="section-kicker">The league</p>
+        <h2 class="section-title">Disputes, settled in the Circuit</h2>
+        <p class="section-lead">
+          Built as a local versus and single-player fighting game in Godot 4 —
+          the readability of classic 2D fighters, the chassis weight of industrial mechs.
+          First to two rounds. Punch, kick, uppercut, crouch kick, spinning kick.
+          Guard by holding away when the hit lands.
+        </p>
+        <div class="stats">
+          <div class="stat"><strong>5</strong><span>Pilots &amp; chassis</span></div>
+          <div class="stat"><strong>4</strong><span>Public arenas</span></div>
+          <div class="stat"><strong>5</strong><span>Campaign stories</span></div>
+          <div class="stat"><strong>2097</strong><span>Season year</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pilots">
+      <div class="wrap">
+        <p class="section-kicker">Roster</p>
+        <h2 class="section-title">Pilots &amp; machines</h2>
+        <p class="section-lead">
+          Each pilot is locked to one sponsored chassis. Mirror matches are allowed —
+          and in campaign, a twin on the other side of the gate is never an accident.
+        </p>
+        <div class="pilots-grid">
+          <article class="pilot">
+            <img class="pilot-shot" src="media/pilots/mephala.jpg" alt="Mephala" width="352" height="440">
+            <div class="pilot-meta">
+              <p class="pilot-call">Iron Web</p>
+              <h3 class="pilot-name">Mephala</h3>
+              <p class="pilot-robot">PHALANX — fortress / doctrine</p>
+              <p class="pilot-corp">Titan Defense Systems</p>
+            </div>
+          </article>
+          <article class="pilot">
+            <img class="pilot-shot" src="media/pilots/kwame.jpg" alt="Kwame" width="352" height="440">
+            <div class="pilot-meta">
+              <p class="pilot-call">Redline</p>
+              <h3 class="pilot-name">Kwame</h3>
+              <p class="pilot-robot">RAVEN — rushdown duelist</p>
+              <p class="pilot-corp">Redline Motor Works</p>
+            </div>
+          </article>
+          <article class="pilot">
+            <img class="pilot-shot" src="media/pilots/liuliu.jpg" alt="Liuliu" width="352" height="440">
+            <div class="pilot-meta">
+              <p class="pilot-call">Ghost Orchid</p>
+              <h3 class="pilot-name">Liuliu</h3>
+              <p class="pilot-robot">GHOST — air interceptor</p>
+              <p class="pilot-corp">Jade Sky Systems</p>
+            </div>
+          </article>
+          <article class="pilot">
+            <img class="pilot-shot" src="media/pilots/arjun_chandra.jpg" alt="Arjun Chandra" width="352" height="440">
+            <div class="pilot-meta">
+              <p class="pilot-call">Vanguard</p>
+              <h3 class="pilot-name">Arjun Chandra</h3>
+              <p class="pilot-robot">VALIANT — balanced line</p>
+              <p class="pilot-corp">Bastion Dynamics</p>
+            </div>
+          </article>
+          <article class="pilot">
+            <img class="pilot-shot" src="media/pilots/filip_vokurka.jpg" alt="Filip Vokurka" width="352" height="440">
+            <div class="pilot-meta">
+              <p class="pilot-call">Blacksmith</p>
+              <h3 class="pilot-name">Filip Vokurka</h3>
+              <p class="pilot-robot">BIVOJ — industrial brawler</p>
+              <p class="pilot-corp">Moravian Heavy Works</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="arenas" id="arenas">
+      <div class="wrap">
+        <p class="section-kicker">Venues</p>
+        <h2 class="section-title">The Circuit map</h2>
+        <p class="section-lead">
+          Four public venues on the selector. A fifth — TDS Foundry Bay 12 —
+          stays off the network until campaign Iron Web opens the doors.
+        </p>
+        <div class="arena-list">
+          <article class="arena">
+            <img class="arena-img" src="media/arenas/iron_city.jpg" alt="Iron City arena" width="800" height="450">
+            <div class="arena-copy">
+              <p class="arena-num">01 // Iron Circuit</p>
+              <h3>Iron City</h3>
+              <p class="arena-loc">City Arena</p>
+              <p>Neon decks, live crowd, wet steel. The league’s broadcast stage — and where the season usually starts drawing blood.</p>
+            </div>
+          </article>
+          <article class="arena">
+            <img class="arena-img" src="media/arenas/overgrown_ruins.jpg" alt="Overgrown Ruins arena" width="800" height="450">
+            <div class="arena-copy">
+              <p class="arena-num">02 // Sector 6</p>
+              <h3>Overgrown Ruins</h3>
+              <p class="arena-loc">Reclaimed City</p>
+              <p>Where the last real war ended. Vines through concrete, soft ground, nowhere to hide a bad decision.</p>
+            </div>
+          </article>
+          <article class="arena">
+            <img class="arena-img" src="media/arenas/lantern_harbor.jpg" alt="Lantern Harbor arena" width="800" height="450">
+            <div class="arena-copy">
+              <p class="arena-num">03 // Lantern Quay</p>
+              <h3>Lantern Harbor</h3>
+              <p class="arena-loc">Harbor District</p>
+              <p>Rain on the quay, lanterns in the mist. Home docks for Redline — and a favorite place to bury a fixed fight.</p>
+            </div>
+          </article>
+          <article class="arena">
+            <img class="arena-img" src="media/arenas/neo_prague.jpg" alt="Neo Prague arena" width="800" height="450">
+            <div class="arena-copy">
+              <p class="arena-num">04 // Bohemia</p>
+              <h3>Neo Prague</h3>
+              <p class="arena-loc">Vltava Skyline</p>
+              <p>Castle and towers over the river. Filip’s home map — and the season final when Moravian Heavy Works still has something left to prove.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="modes">
+      <div class="wrap">
+        <p class="section-kicker">Play</p>
+        <h2 class="section-title">How the night runs</h2>
+        <p class="section-lead">
+          From the main menu: New Game opens match rules, then pilot/chassis pairs, then venue —
+          or Campaign, five stories that unlock in order.
+        </p>
+        <div class="modes-grid">
+          <article class="mode">
+            <h3>Versus</h3>
+            <p>Local player vs player on one keyboard, or player vs AI on Easy, Normal, or Hard. Same roster, same arenas, clean best-of-three.</p>
+          </article>
+          <article class="mode">
+            <h3>Campaign</h3>
+            <p>Five pilot campaigns — Steel Heart, Redline, Ghost Orchid, Vanguard, Iron Web — told through ICN news between CPU matches. Finish one file to open the next.</p>
+          </article>
+          <article class="mode">
+            <h3>Hangar &amp; Jukebox</h3>
+            <p>Inspect chassis notes in the hangar, read pilot dossiers, and spin the cabinet — including the track under your feet right now.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="icn" id="icn">
+      <div class="wrap icn-inner">
+        <img src="media/pilots/vesna_holt.jpg" alt="Vesna Holt, ICN evening news" width="180" height="225">
+        <div>
+          <p class="icn-tag">ICN Evening News</p>
+          <h2>This is Vesna Holt</h2>
+          <p>
+            Between campaign matches the story breaks on Iron Circuit News —
+            live monitor, typed caption, and Vesna on the plate.
+            Season 2097 opens with Moravian Heavy Works on the brink,
+            and ends somewhere the cameras were never supposed to go.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>
+        <strong>IRON CIRCUIT</strong>
+        Alpha prototype · Godot 4 · Made around Neo Prague
+      </div>
+      <div>© 2097 / 2026 · Pilots enter. Titans fight.</div>
+    </div>
+  </footer>
+
+  <aside class="deck" id="deck" aria-label="Soundtrack player">
+    <div class="deck-head">
+      <div>
+        <p class="deck-label">Now spinning</p>
+        <p class="deck-title">Metal Arena</p>
+      </div>
+      <p class="deck-live" aria-hidden="true">Live</p>
+    </div>
+    <div class="deck-bars" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="deck-controls">
+      <button type="button" class="deck-btn" id="btn-play" aria-label="Play">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <span>Play</span>
+      </button>
+      <button type="button" class="deck-btn" id="btn-stop" aria-label="Stop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
+        <span>Stop</span>
+      </button>
+      <button type="button" class="deck-btn" id="btn-mute" aria-label="Mute">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2a4.5 4.5 0 00-2.3-3.9v7.8a4.5 4.5 0 002.3-3.9zM14 3.2v2.1a6.9 6.9 0 010 13.4v2.1A9 9 0 0014 3.2z"/></svg>
+        <span id="mute-label">Mute</span>
+      </button>
+    </div>
+    <p class="deck-hint" id="deck-hint"></p>
+  </aside>
+
+  <audio id="track" src="media/audio/metal-arena.wav" preload="auto" loop></audio>
+
+  <script>
+    (function () {
+      const audio = document.getElementById("track");
+      const deck = document.getElementById("deck");
+      const hint = document.getElementById("deck-hint");
+      const btnPlay = document.getElementById("btn-play");
+      const btnStop = document.getElementById("btn-stop");
+      const btnMute = document.getElementById("btn-mute");
+
+      audio.volume = 0.55;
+
+      function setPlaying(on) {
+        deck.classList.toggle("is-playing", on);
+        btnPlay.classList.toggle("is-on", on && !audio.paused);
+      }
+
+      function setMuted(on) {
+        audio.muted = on;
+        btnMute.classList.toggle("is-on", on);
+        document.getElementById("mute-label").textContent = on ? "Unmute" : "Mute";
+      }
+
+      async function playTrack() {
+        try {
+          await audio.play();
+          deck.classList.remove("needs-gesture");
+          hint.textContent = "";
+          setPlaying(true);
+          return true;
+        } catch (err) {
+          deck.classList.add("needs-gesture");
+          hint.textContent = "Browser blocked autoplay — press Play";
+          setPlaying(false);
+          return false;
+        }
+      }
+
+      function stopTrack() {
+        audio.pause();
+        audio.currentTime = 0;
+        setPlaying(false);
+      }
+
+      btnPlay.addEventListener("click", () => { playTrack(); });
+      btnStop.addEventListener("click", () => { stopTrack(); });
+      btnMute.addEventListener("click", () => { setMuted(!audio.muted); });
+
+      audio.addEventListener("play", () => setPlaying(true));
+      audio.addEventListener("pause", () => {
+        if (audio.currentTime === 0 || audio.ended) setPlaying(false);
+        else setPlaying(false);
+      });
+
+      // Try to start Metal Arena as soon as the page is ready.
+      const boot = () => { playTrack(); };
+      if (document.readyState === "complete") boot();
+      else window.addEventListener("load", boot);
+
+      // One-shot unlock if autoplay was blocked.
+      const unlock = () => {
+        if (audio.paused) playTrack();
+        window.removeEventListener("pointerdown", unlock);
+        window.removeEventListener("keydown", unlock);
+      };
+      window.addEventListener("pointerdown", unlock);
+      window.addEventListener("keydown", unlock);
+    })();
+  </script>
+</body>
+</html>
