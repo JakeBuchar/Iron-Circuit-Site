@@ -511,6 +511,45 @@
       from { height: 18%; }
       to { height: 100%; }
     }
+
+    /* Minimized state - show only controls */
+    .deck.minimized {
+      padding: 0.6rem 0.9rem;
+    }
+    
+    .deck.minimized .deck-title,
+    .deck.minimized .deck-label,
+    .deck.minimized .deck-live,
+    .deck.minimized .deck-bars,
+    .deck.minimized .deck-hint {
+      display: none;
+    }
+    
+    /* In minimized state, hide play/stop but keep mute visible */
+    .deck.minimized #btn-play,
+    .deck.minimized #btn-stop,
+    .deck.minimized .deck-controls p {
+      display: none;
+    }
+    
+    /* Stack controls in a single column */
+    .deck.minimized .deck-controls {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+      width: 80%;
+      margin: 0 auto;
+    }
+    
+    .deck.minimized #btn-minimize {
+      display: inline-flex !important;
+      width: 100%;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+
     .deck-controls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -803,6 +842,7 @@
       </button>
     </div>
     <p class="deck-hint" id="deck-hint"></p>
+    <button type="button" class="deck-btn minimize-btn" id="btn-minimize">Minimize</button>
   </aside>
 
   <audio id="track" src="media/audio/metal-arena.wav" preload="auto" loop></audio>
@@ -815,6 +855,7 @@
       const btnPlay = document.getElementById("btn-play");
       const btnStop = document.getElementById("btn-stop");
       const btnMute = document.getElementById("btn-mute");
+      const btnMinimize = document.getElementById("btn-minimize");
 
       audio.volume = 0.55;
 
@@ -853,6 +894,14 @@
       btnPlay.addEventListener("click", () => { playTrack(); });
       btnStop.addEventListener("click", () => { stopTrack(); });
       btnMute.addEventListener("click", () => { setMuted(!audio.muted); });
+
+      // Minimize button handler - toggle visibility of audio player
+      btnMinimize.addEventListener("click", () => {
+        deck.classList.toggle("minimized");
+        // Toggle text between "Minimize" and "Restore"
+        const currentText = btnMinimize.textContent;
+        btnMinimize.textContent = currentText === "Minimize" ? "Restore" : "Minimize";
+      });
 
       audio.addEventListener("play", () => setPlaying(true));
       audio.addEventListener("pause", () => {
