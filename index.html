@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IRON CIRCUIT — Corporate Mech Combat League 2097</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23070a0c'/%3E%3Cpath d='M8 8 L16 4 L24 8 L28 16 L24 24 L16 28 L8 24 L4 16Z' fill='none' stroke='%23d8902f' stroke-width='1.5'/%3E%3Ctext x='16' y='20' text-anchor='middle' font-family='sans-serif' font-size='10' font-weight='bold' fill='%23d8902f'%3EIC%3C/text%3E%3C/svg%3E" type="image/svg" sizes="32x32">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23070a0c'/%3E%3Cpath d='M8 8 L16 4 L24 8 L28 16 L24 24 L16 28 L8 24 L4 16Z' fill='none' stroke='%23d8902f' stroke-width='1.5'/%3E%3Ctext x='16' y='20' text-anchor='middle' font-family='sans-serif' font-size='10' font-weight='bold' fill='%23d8902f'%3EIC%3C/text%3E%3C/svg%3E" type="image/svg+xml" sizes="32x32">
   <meta name="description" content="Year 2097. A corporate mech fighting league settles disputes through mechanised combat. Five pilots. Five machines. Four arenas. One Circuit.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +40,13 @@
     img { display: block; max-width: 100%; height: auto; }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    .pilot:focus-visible {
+      outline: 2px solid var(--accent-hot);
+      outline-offset: 3px;
+    }
 
     .wrap {
       width: min(1120px, calc(100% - 2.5rem));
@@ -234,6 +241,7 @@
       background: var(--panel);
       border: 1px solid rgba(52, 67, 75, 0.7);
       overflow: hidden;
+      cursor: pointer;
       transition: border-color 0.25s ease, transform 0.25s ease;
     }
     .pilot:hover {
@@ -335,6 +343,22 @@
       margin-bottom: 0.7rem;
     }
     .arena-copy p { color: var(--muted); font-size: 0.95rem; }
+    .arena-details-btn {
+      align-self: flex-start;
+      margin-top: 1rem;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--steel);
+      color: var(--accent-hot);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .arena-details-btn:hover {
+      border-color: var(--accent);
+      background: rgba(216, 144, 47, 0.12);
+    }
 
     /* —— Modes —— */
     .modes-grid {
@@ -379,6 +403,17 @@
       border: 3px solid #2b3a9e;
       background: #111;
     }
+    .vesna-canvas,
+    .vesna-fallback {
+      width: 180px;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border: 3px solid #2b3a9e;
+      background: #111;
+      image-rendering: pixelated;
+    }
+    .vesna-canvas[hidden],
+    .vesna-fallback[hidden] { display: none; }
     .icn-tag {
       font-family: var(--font-mono);
       font-size: 0.7rem;
@@ -658,6 +693,87 @@
       border-top: 5px solid var(--steel);
     }
     .tooltip-wrap:hover .tooltip { opacity: 1; }
+    .tooltip-wrap:focus-within .tooltip { opacity: 1; }
+
+    .pilot-modal[hidden],
+    .arena-modal[hidden] { display: none; }
+    .pilot-modal,
+    .arena-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+    }
+    .pilot-modal-backdrop,
+    .arena-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+    }
+    .pilot-modal-panel,
+    .arena-modal-panel {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(180px, 280px) 1fr;
+      gap: 1.5rem;
+      width: min(760px, 100%);
+      max-height: calc(100dvh - 2.5rem);
+      overflow: auto;
+      padding: 1.35rem;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.7);
+      animation: modal-in 0.2s ease-out;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .pilot-modal-close,
+    .arena-modal-close {
+      position: absolute;
+      top: 0.35rem;
+      right: 0.7rem;
+      z-index: 2;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--muted);
+    }
+    .pilot-modal-close:hover,
+    .arena-modal-close:hover { color: var(--accent-hot); }
+    .pilot-modal-image,
+    .arena-modal-image {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+    }
+    .pilot-modal-panel h2,
+    .arena-modal-panel h2 {
+      margin: 0.2rem 0 0.5rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 4rem);
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+    .pilot-modal-muted,
+    #pilot-modal-lore,
+    #arena-modal-description,
+    #arena-modal-rule { color: var(--muted); }
+    .pilot-modal-corp { margin-top: 0.35rem; }
+    .pilot-modal-label,
+    .arena-rule-label {
+      margin-top: 1.25rem;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -888,11 +1004,17 @@
       .arena:nth-child(even) .arena-copy { order: 0; }
       .icn-inner { grid-template-columns: 1fr; }
       .icn img { width: 140px; }
+      .vesna-canvas,
+      .vesna-fallback { width: 140px; }
       .top nav { display: none; }
     }
     @media (max-width: 640px) {
       .pilots-grid { grid-template-columns: repeat(2, 1fr); }
       .hero-inner { padding-bottom: 7rem; }
+      .pilot-modal-panel,
+      .arena-modal-panel { grid-template-columns: 1fr; }
+      .pilot-modal-image,
+      .arena-modal-image { max-height: 280px; }
     }
   </style>
 </head>
@@ -930,7 +1052,7 @@
         <p class="cs-badge">Launching 2026</p>
         <h2 class="cs-title">Coming Soon</h2>
         <p class="cs-sub">The Circuit is loading. Be first to know.</p>
-        <div class="cs-countdown" id="countdown">
+        <div class="cs-countdown" id="countdown" aria-label="Time remaining until launch">
           <div class="cs-block"><span class="cs-num" id="cs-days">--</span><p class="cs-label">Days</p></div>
           <div class="cs-block"><span class="cs-num" id="cs-hours">--</span><p class="cs-label">Hours</p></div>
           <div class="cs-block"><span class="cs-num" id="cs-mins">--</span><p class="cs-label">Mins</p></div>
@@ -975,7 +1097,7 @@
           and in campaign, a twin on the other side of the gate is never an accident.
         </p>
         <div class="pilots-grid">
-          <article class="pilot">
+          <article class="pilot" data-pilot="mephala" role="button" tabindex="0" aria-controls="pilot-modal" aria-label="View details for Mephala">
             <img class="pilot-shot" src="media/pilots/mephala.jpg" alt="Mephala" width="352" height="440">
             <div class="pilot-meta">
               <p class="pilot-call">Iron Web</p>
@@ -984,7 +1106,7 @@
               <p class="pilot-corp">Titan Defense Systems</p>
             </div>
           </article>
-          <article class="pilot">
+          <article class="pilot" data-pilot="kwame" role="button" tabindex="0" aria-controls="pilot-modal" aria-label="View details for Kwame">
             <img class="pilot-shot" src="media/pilots/kwame.jpg" alt="Kwame" width="352" height="440">
             <div class="pilot-meta">
               <p class="pilot-call">Redline</p>
@@ -993,7 +1115,7 @@
               <p class="pilot-corp">Redline Motor Works</p>
             </div>
           </article>
-          <article class="pilot">
+          <article class="pilot" data-pilot="liuliu" role="button" tabindex="0" aria-controls="pilot-modal" aria-label="View details for Liuliu">
             <img class="pilot-shot" src="media/pilots/liuliu.jpg" alt="Liuliu" width="352" height="440">
             <div class="pilot-meta">
               <p class="pilot-call">Ghost Orchid</p>
@@ -1002,7 +1124,7 @@
               <p class="pilot-corp">Jade Sky Systems</p>
             </div>
           </article>
-          <article class="pilot">
+          <article class="pilot" data-pilot="arjun" role="button" tabindex="0" aria-controls="pilot-modal" aria-label="View details for Arjun Chandra">
             <img class="pilot-shot" src="media/pilots/arjun_chandra.jpg" alt="Arjun Chandra" width="352" height="440">
             <div class="pilot-meta">
               <p class="pilot-call">Vanguard</p>
@@ -1011,7 +1133,7 @@
               <p class="pilot-corp">Bastion Dynamics</p>
             </div>
           </article>
-          <article class="pilot">
+          <article class="pilot" data-pilot="filip" role="button" tabindex="0" aria-controls="pilot-modal" aria-label="View details for Filip Vokurka">
             <img class="pilot-shot" src="media/pilots/filip_vokurka.jpg" alt="Filip Vokurka" width="352" height="440">
             <div class="pilot-meta">
               <p class="pilot-call">Blacksmith</p>
@@ -1040,6 +1162,7 @@
               <h3>Iron City</h3>
               <p class="arena-loc">City Arena</p>
               <p>Neon decks, live crowd, wet steel. The league’s broadcast stage — and where the season usually starts drawing blood.</p>
+              <button class="arena-details-btn" type="button" data-arena="iron-city" aria-controls="arena-modal">View arena details</button>
             </div>
           </article>
           <article class="arena">
@@ -1049,6 +1172,7 @@
               <h3>Overgrown Ruins</h3>
               <p class="arena-loc">Reclaimed City</p>
               <p>Where the last real war ended. Vines through concrete, soft ground, nowhere to hide a bad decision.</p>
+              <button class="arena-details-btn" type="button" data-arena="overgrown-ruins" aria-controls="arena-modal">View arena details</button>
             </div>
           </article>
           <article class="arena">
@@ -1058,6 +1182,7 @@
               <h3>Lantern Harbor</h3>
               <p class="arena-loc">Harbor District</p>
               <p>Rain on the quay, lanterns in the mist. Home docks for Redline — and a favorite place to bury a fixed fight.</p>
+              <button class="arena-details-btn" type="button" data-arena="lantern-harbor" aria-controls="arena-modal">View arena details</button>
             </div>
           </article>
           <article class="arena">
@@ -1067,6 +1192,7 @@
               <h3>Neo Prague</h3>
               <p class="arena-loc">Vltava Skyline</p>
               <p>Castle and towers over the river. Filip’s home map — and the season final when Moravian Heavy Works still has something left to prove.</p>
+              <button class="arena-details-btn" type="button" data-arena="neo-prague" aria-controls="arena-modal">View arena details</button>
             </div>
           </article>
         </div>
@@ -1100,7 +1226,12 @@
 
     <section class="icn" id="icn">
       <div class="wrap icn-inner">
-        <img src="media/pilots/vesna_holt.jpg" alt="Vesna Holt, ICN evening news" width="180" height="225">
+        <div class="vesna-frame">
+          <canvas class="vesna-canvas" id="vesna-animation" width="1024" height="1536"
+                  role="img" aria-label="Animated pixel-art portrait of ICN news anchor Vesna Holt" hidden></canvas>
+          <img class="vesna-fallback" id="vesna-fallback" src="media/pilots/vesna_holt.jpg"
+               alt="Vesna Holt, ICN evening news" width="180" height="270">
+        </div>
         <div>
           <p class="icn-tag">ICN Evening News</p>
           <h2>This is Vesna Holt</h2>
@@ -1113,6 +1244,42 @@
         </div>
       </div>
     </section>
+
+    <div class="pilot-modal" id="pilot-modal" role="dialog" aria-modal="true" aria-labelledby="pilot-modal-name" hidden>
+      <div class="pilot-modal-backdrop" data-modal-close></div>
+      <div class="pilot-modal-panel">
+        <button class="pilot-modal-close" type="button" aria-label="Close pilot details" data-modal-close>×</button>
+        <img id="pilot-modal-image" class="pilot-modal-image" src="" alt="">
+        <div>
+          <p id="pilot-modal-call" class="pilot-call"></p>
+          <h2 id="pilot-modal-name"></h2>
+          <p id="pilot-modal-robot" class="pilot-modal-muted"></p>
+          <p id="pilot-modal-corp" class="pilot-modal-muted pilot-modal-corp"></p>
+          <p class="pilot-modal-label">Campaign</p>
+          <p id="pilot-modal-campaign"></p>
+          <p class="pilot-modal-label">Combat philosophy</p>
+          <p id="pilot-modal-philosophy"></p>
+          <p class="pilot-modal-label">Dossier</p>
+          <p id="pilot-modal-lore"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="arena-modal" id="arena-modal" role="dialog" aria-modal="true" aria-labelledby="arena-modal-title" hidden>
+      <div class="arena-modal-backdrop" data-modal-close></div>
+      <div class="arena-modal-panel">
+        <button class="arena-modal-close" type="button" aria-label="Close arena details" data-modal-close>×</button>
+        <img id="arena-modal-image" class="arena-modal-image" src="" alt="">
+        <div>
+          <p id="arena-modal-num" class="arena-num"></p>
+          <h2 id="arena-modal-title"></h2>
+          <p id="arena-modal-location" class="arena-loc"></p>
+          <p id="arena-modal-description"></p>
+          <p class="arena-rule-label">Arena rule</p>
+          <p id="arena-modal-rule"></p>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -1142,7 +1309,7 @@
       <span></span><span></span><span></span><span></span>
     </div>
     <div class="deck-controls">
-      <button type="button" class="deck-btn" id="btn-play" aria-label="Play">
+      <button type="button" class="deck-btn" id="btn-play" aria-label="Play" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         <span>Play</span>
       </button>
@@ -1150,13 +1317,13 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z"/></svg>
         <span>Stop</span>
       </button>
-      <button type="button" class="deck-btn" id="btn-mute" aria-label="Mute">
+      <button type="button" class="deck-btn" id="btn-mute" aria-label="Mute" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2a4.5 4.5 0 00-2.3-3.9v7.8a4.5 4.5 0 002.3-3.9zM14 3.2v2.1a6.9 6.9 0 010 13.4v2.1A9 9 0 0014 3.2z"/></svg>
         <span id="mute-label">Mute</span>
       </button>
     </div>
     <p class="deck-hint" id="deck-hint"></p>
-    <button type="button" class="deck-btn minimize-btn" id="btn-minimize">Minimize</button>
+    <button type="button" class="deck-btn minimize-btn" id="btn-minimize" aria-label="Minimize player" aria-expanded="true">Minimize</button>
   </aside>
 
   <audio id="track" src="media/audio/metal-arena.wav" preload="auto" loop></audio>
@@ -1174,13 +1341,19 @@
       audio.volume = 0.55;
 
       function setPlaying(on) {
-        deck.classList.toggle("is-playing", on);
-        btnPlay.classList.toggle("is-on", on && !audio.paused);
+        const playing = on && !audio.paused;
+        deck.classList.toggle("is-playing", playing);
+        btnPlay.classList.toggle("is-on", playing);
+        btnPlay.setAttribute("aria-pressed", String(playing));
+        btnPlay.setAttribute("aria-label", playing ? "Pause" : "Play");
+        btnPlay.querySelector("span").textContent = playing ? "Pause" : "Play";
       }
 
       function setMuted(on) {
         audio.muted = on;
         btnMute.classList.toggle("is-on", on);
+        btnMute.setAttribute("aria-pressed", String(on));
+        btnMute.setAttribute("aria-label", on ? "Unmute" : "Mute");
         document.getElementById("mute-label").textContent = on ? "Unmute" : "Mute";
       }
 
@@ -1205,23 +1378,24 @@
         setPlaying(false);
       }
 
-      btnPlay.addEventListener("click", () => { playTrack(); });
-      btnStop.addEventListener("click", () => { stopTrack(); });
+      function toggleTrack() {
+        if (audio.paused) playTrack();
+        else audio.pause();
+      }
+
+      btnPlay.addEventListener("click", toggleTrack);
+      btnStop.addEventListener("click", stopTrack);
       btnMute.addEventListener("click", () => { setMuted(!audio.muted); });
 
-      // Minimize button handler - toggle visibility of audio player
       btnMinimize.addEventListener("click", () => {
-        deck.classList.toggle("minimized");
-        // Toggle text between "Minimize" and "Restore"
-        const currentText = btnMinimize.textContent;
-        btnMinimize.textContent = currentText === "Minimize" ? "Restore" : "Minimize";
+        const minimized = deck.classList.toggle("minimized");
+        btnMinimize.textContent = minimized ? "Restore" : "Minimize";
+        btnMinimize.setAttribute("aria-label", minimized ? "Restore player" : "Minimize player");
+        btnMinimize.setAttribute("aria-expanded", String(!minimized));
       });
 
       audio.addEventListener("play", () => setPlaying(true));
-      audio.addEventListener("pause", () => {
-        if (audio.currentTime === 0 || audio.ended) setPlaying(false);
-        else setPlaying(false);
-      });
+      audio.addEventListener("pause", () => setPlaying(false));
 
       // Try to start Metal Arena as soon as the page is ready.
       const boot = () => { playTrack(); };
@@ -1257,7 +1431,8 @@
           els.hours.textContent = "00";
           els.mins.textContent = "00";
           els.secs.textContent = "00";
-          return;
+          document.getElementById("countdown").setAttribute("aria-label", "Launch date reached");
+          return false;
         }
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff % 86400000) / 3600000);
@@ -1267,10 +1442,13 @@
         els.hours.textContent = pad(h);
         els.mins.textContent  = pad(m);
         els.secs.textContent  = pad(s);
+        return true;
       }
 
       tick();
-      setInterval(tick, 1000);
+      const countdownTimer = setInterval(() => {
+        if (!tick()) clearInterval(countdownTimer);
+      }, 1000);
     })();
 
     // —— Coming Soon email form (local demo) ——
@@ -1286,6 +1464,404 @@
         note.style.display = "block";
       });
     })();
+
+    // —— Pilot and arena details ——
+    (function () {
+      const pilotModal = document.getElementById("pilot-modal");
+      const arenaModal = document.getElementById("arena-modal");
+      if (!pilotModal || !arenaModal) return;
+
+      let activeModal = null;
+      let previousFocus = null;
+      let previousOverflow = "";
+
+      const pilots = {
+        mephala: {
+          campaign: "Iron Web",
+          philosophy: "Doctrine, discipline, and strategy win wars.",
+          lore: "A former military colonel who discovers that Terran Defense Systems has collected battlefield data from every pilot to create autonomous combat machines and make human pilots obsolete."
+        },
+        kwame: {
+          campaign: "Redline",
+          philosophy: "Instinct, speed, and aggression decide the fight.",
+          lore: "A street-born champion who follows manipulated matches and suspicious betting activity toward a mysterious buyer seeking control of the league."
+        },
+        liuliu: {
+          campaign: "Ghost Orchid",
+          philosophy: "Strike with precision and disappear before retaliation.",
+          lore: "A highly trained operative who uncovers a hidden relay network transmitting combat data to a secret facility where experimental machines are being developed."
+        },
+        arjun: {
+          campaign: "Vanguard",
+          philosophy: "Skill and honor matter more than corporate resources.",
+          lore: "An honorable veteran who learns that the Iron Circuit is scheduled to end after the season and reaches the hidden facility known as Foundry Bay 12."
+        },
+        filip: {
+          campaign: "Steel Heart",
+          philosophy: "Every piece of steel has a soul.",
+          lore: "An engineer and test pilot from Ostrava who built his own machine. Discovering an unregistered BIVOJ reveals the first sign of the wider conspiracy."
+        }
+      };
+
+      const arenas = {
+        "iron-city": {
+          number: "01 // Iron Circuit",
+          title: "Iron City",
+          location: "City Arena",
+          image: "media/arenas/iron_city.jpg",
+          description: "Neon decks, live crowds, and wet steel make Iron City the league's broadcast stage.",
+          rule: "Wet flooring reduces traction and makes every movement a commitment."
+        },
+        "overgrown-ruins": {
+          number: "02 // Sector 6",
+          title: "Overgrown Ruins",
+          location: "Reclaimed City",
+          image: "media/arenas/overgrown_ruins.jpg",
+          description: "The last real war ended here. Vines split the concrete and there is nowhere to hide a bad decision.",
+          rule: "Uneven ground makes retreat timing less forgiving."
+        },
+        "lantern-harbor": {
+          number: "03 // Lantern Quay",
+          title: "Lantern Harbor",
+          location: "Harbor District",
+          image: "media/arenas/lantern_harbor.jpg",
+          description: "Rain and lanterns surround Redline's home docks, where fixed fights are easy to bury.",
+          rule: "Mist and limited visibility make spacing harder to read."
+        },
+        "neo-prague": {
+          number: "04 // Bohemia",
+          title: "Neo Prague",
+          location: "Vltava Skyline",
+          image: "media/arenas/neo_prague.jpg",
+          description: "Castle and towers rise over the Vltava in Filip's home arena and the usual season-final venue.",
+          rule: "The narrow platform rewards controlled footwork."
+        }
+      };
+
+      function setText(id, value) {
+        document.getElementById(id).textContent = value;
+      }
+
+      function getFocusable(modal) {
+        return Array.from(modal.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(element => !element.disabled);
+      }
+
+      function openModal(modal, source) {
+        previousFocus = source;
+        previousOverflow = document.body.style.overflow;
+        activeModal = modal;
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        modal.querySelector("button").focus();
+      }
+
+      function closeModal() {
+        if (!activeModal) return;
+        activeModal.hidden = true;
+        activeModal = null;
+        document.body.style.overflow = previousOverflow;
+        if (previousFocus) previousFocus.focus();
+      }
+
+      document.querySelectorAll(".pilot[data-pilot]").forEach(card => {
+        const open = () => {
+          const pilot = pilots[card.dataset.pilot];
+          if (!pilot) return;
+          const image = card.querySelector(".pilot-shot");
+          document.getElementById("pilot-modal-image").src = image.src;
+          document.getElementById("pilot-modal-image").alt = image.alt;
+          setText("pilot-modal-call", card.querySelector(".pilot-call").textContent);
+          setText("pilot-modal-name", card.querySelector(".pilot-name").textContent);
+          setText("pilot-modal-robot", card.querySelector(".pilot-robot").textContent);
+          setText("pilot-modal-corp", card.querySelector(".pilot-corp").textContent);
+          setText("pilot-modal-campaign", pilot.campaign);
+          setText("pilot-modal-philosophy", pilot.philosophy);
+          setText("pilot-modal-lore", pilot.lore);
+          openModal(pilotModal, card);
+        };
+
+        card.addEventListener("click", open);
+        card.addEventListener("keydown", event => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          open();
+        });
+      });
+
+      document.querySelectorAll(".arena-details-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const arena = arenas[button.dataset.arena];
+          if (!arena) return;
+          const image = document.getElementById("arena-modal-image");
+          image.src = arena.image;
+          image.alt = `${arena.title} arena`;
+          setText("arena-modal-num", arena.number);
+          setText("arena-modal-title", arena.title);
+          setText("arena-modal-location", arena.location);
+          setText("arena-modal-description", arena.description);
+          setText("arena-modal-rule", arena.rule);
+          openModal(arenaModal, button);
+        });
+      });
+
+      [pilotModal, arenaModal].forEach(modal => {
+        modal.querySelectorAll("[data-modal-close]").forEach(element => {
+          element.addEventListener("click", closeModal);
+        });
+      });
+
+      document.addEventListener("keydown", event => {
+        if (!activeModal) return;
+        if (event.key === "Escape") {
+          closeModal();
+          return;
+        }
+        if (event.key !== "Tab") return;
+
+        const focusable = getFocusable(activeModal);
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    })();
+
+    // —— Animated ICN anchor ——
+    (function () {
+      const canvas = document.getElementById("vesna-animation");
+      const fallback = document.getElementById("vesna-fallback");
+      const context = canvas && canvas.getContext("2d");
+      if (!canvas || !fallback || !context) return;
+
+      const sources = {
+        anchor: "news_anchor/anchor.png",
+        plate: "news_anchor/plate.png",
+        blink: "news_anchor/blink.png"
+      };
+      const images = {};
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let ready = false;
+      let visible = false;
+      let lastFrame = 0;
+      let time = 0;
+      let blinkIn = 3;
+      let blinkTime = -1;
+      let doubleBlink = false;
+      let open = 0;
+      let syllableRemaining = 0;
+      let syllableLength = 0.2;
+      let syllableAmplitude = 0;
+      let syllablesInWord = 0;
+      let wordsInPhrase = 0;
+      let speechGap = 0;
+      let nodTime = -1;
+      let nodAmplitude = 0;
+
+      function random(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function loadImage(name, src) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => {
+            images[name] = image;
+            resolve();
+          };
+          image.onerror = () => reject(new Error(`Unable to load Vesna layer: ${src}`));
+          image.src = src;
+        });
+      }
+
+      function nextSyllable() {
+        if (syllablesInWord <= 0) {
+          if (wordsInPhrase <= 0) {
+            wordsInPhrase = Math.floor(random(4, 12));
+            speechGap = random(0.35, 0.9);
+          } else {
+            speechGap = random(0.04, 0.14);
+          }
+          wordsInPhrase -= 1;
+          syllablesInWord = Math.floor(random(1, 4));
+        }
+        syllablesInWord -= 1;
+        syllableLength = random(0.12, 0.24);
+        syllableRemaining = syllableLength;
+        syllableAmplitude = Math.random() < 0.15 ? 0.08 : random(0.3, 0.8);
+        if (syllableAmplitude > 0.65 && Math.random() < 0.25) {
+          nodTime = 0;
+          nodAmplitude = 0.5;
+        }
+      }
+
+      function update(delta) {
+        time += delta;
+
+        if (speechGap > 0) {
+          speechGap -= delta;
+          open = Math.max(0, open - delta * 8);
+        } else {
+          syllableRemaining -= delta;
+          if (syllableRemaining <= 0) nextSyllable();
+          const progress = 1 - syllableRemaining / syllableLength;
+          const target = progress < 0.6 ? syllableAmplitude : 0.06;
+          open += (target - open) * (1 - Math.exp(-delta / (target > open ? 0.035 : 0.05)));
+        }
+
+        blinkIn -= delta;
+        if (blinkIn <= 0 && blinkTime < 0) {
+          blinkTime = 0;
+          doubleBlink = Math.random() < 0.2;
+          blinkIn = random(2.2, 5.5);
+        }
+        if (blinkTime >= 0) {
+          blinkTime += delta;
+          if (blinkTime > 0.2) {
+            blinkTime = doubleBlink ? 0 : -1;
+            doubleBlink = false;
+          }
+        }
+        if (nodTime >= 0) {
+          nodTime += delta;
+          if (nodTime > 0.45) nodTime = -1;
+        }
+      }
+
+      function drawStudio() {
+        context.drawImage(images.plate, 0, 0);
+
+        const centerX = 35;
+        const centerY = 415;
+        const radius = 128;
+        context.save();
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.clip();
+        context.strokeStyle = "rgba(41, 225, 238, 0.32)";
+        context.lineWidth = 3;
+        for (let index = 0; index < 4; index += 1) {
+          const longitude = time * 0.35 + index * Math.PI / 4;
+          const width = Math.max(5, Math.abs(Math.sin(longitude)) * radius);
+          context.beginPath();
+          context.ellipse(centerX, centerY, width, radius, 0, 0, Math.PI * 2);
+          context.stroke();
+        }
+        const latitude = centerY + Math.sin(time * 0.5) * radius * 0.58;
+        context.beginPath();
+        context.ellipse(centerX, latitude, radius, 15, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.restore();
+
+        const ceilingSweep = (time * 240) % 1900 - 400;
+        const glow = context.createRadialGradient(ceilingSweep, 95, 0, ceilingSweep, 95, 70);
+        glow.addColorStop(0, "rgba(113, 228, 255, 0.24)");
+        glow.addColorStop(1, "rgba(113, 228, 255, 0)");
+        context.fillStyle = glow;
+        context.fillRect(0, 0, 1024, 150);
+      }
+
+      function drawPortrait() {
+        const breathing = 0.7 + Math.sin(time * Math.PI * 2 / 4.6) * 0.7;
+        let nod = 0;
+        if (nodTime >= 0) nod = 3.5 * nodAmplitude * Math.sin(Math.PI * nodTime / 0.45);
+        const headX = Math.sin(time * 0.37) * 1.6 + Math.sin(time * 0.83 + 1) * 0.8;
+        const headY = Math.sin(time * 0.51 + 2) + open + nod;
+        const tilt = Math.sin(time * 0.29) * 0.0035 + Math.sin(time * 0.71 + 0.4) * 0.0018;
+
+        context.save();
+        context.translate(512 + headX, 820 + headY + breathing);
+        context.rotate(tilt);
+        context.translate(-512, -820);
+        context.drawImage(images.anchor, 0, 0);
+
+        if (blinkTime >= 0) {
+          let amount;
+          if (blinkTime < 0.07) amount = blinkTime / 0.07;
+          else if (blinkTime < 0.11) amount = 1;
+          else amount = Math.max(0, 1 - (blinkTime - 0.11) / 0.09);
+          const frame = amount < 0.15 ? -1 : amount < 0.5 ? 0 : amount < 0.85 ? 1 : 2;
+          if (frame >= 0) {
+            context.drawImage(images.blink, 0, frame * 96, 276, 96, 388, 360, 276, 96);
+          }
+        }
+
+        if (open > 0.09) {
+          const mouthWidth = 60;
+          const gap = Math.round(open * 18.6 / 6) * 6;
+          context.fillStyle = "#21090a";
+          context.beginPath();
+          context.ellipse(520, 586, mouthWidth * 0.92, Math.max(2, gap / 2), 0, 0, Math.PI * 2);
+          context.fill();
+          if (gap >= 12) {
+            context.fillStyle = "#d6c9bb";
+            context.fillRect(494, 580, 52, Math.min(5, gap / 3));
+          }
+          if (gap >= 18) {
+            context.fillStyle = "#762b29";
+            context.fillRect(501, 590, 38, 4);
+          }
+        }
+        context.restore();
+      }
+
+      function render() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawStudio();
+        drawPortrait();
+      }
+
+      function animate(timestamp) {
+        if (!ready || !visible || reducedMotion.matches) return;
+        if (timestamp - lastFrame >= 1000 / 24) {
+          const delta = lastFrame ? Math.min((timestamp - lastFrame) / 1000, 0.05) : 1 / 24;
+          lastFrame = timestamp;
+          update(delta);
+          render();
+        }
+        window.requestAnimationFrame(animate);
+      }
+
+      function start() {
+        if (!ready || !visible) return;
+        if (reducedMotion.matches) {
+          render();
+          return;
+        }
+        lastFrame = 0;
+        window.requestAnimationFrame(animate);
+      }
+
+      Promise.all(Object.entries(sources).map(([name, src]) => loadImage(name, src)))
+        .then(() => {
+          ready = true;
+          canvas.hidden = false;
+          fallback.hidden = true;
+          render();
+          start();
+        })
+        .catch(error => {
+          console.warn(error.message);
+        });
+
+      const observer = new IntersectionObserver(entries => {
+        visible = entries.some(entry => entry.isIntersecting);
+        if (visible) start();
+      }, { threshold: 0.05 });
+      observer.observe(canvas);
+
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) render();
+        else start();
+      });
+    })();
+
   </script>
 </body>
 </html>
