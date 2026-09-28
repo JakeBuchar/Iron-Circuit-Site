@@ -1015,6 +1015,28 @@
       .arena-modal-panel { grid-template-columns: 1fr; }
       .pilot-modal-image,
       .arena-modal-image { max-height: 280px; }
+      .deck.minimized {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        width: min(260px, calc(100vw - 1.6rem));
+        padding: 0.35rem 0.55rem;
+      }
+      .deck.minimized .deck-head { display: none; }
+      .deck.minimized .deck-controls { display: contents; }
+      .deck.minimized #btn-mute,
+      .deck.minimized #btn-minimize {
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 1.8rem;
+        padding: 0.25rem 0.35rem;
+        font-size: 0.58rem;
+      }
+      .deck.minimized #btn-minimize {
+        width: auto;
+        margin: 0;
+      }
+      .deck.minimized .deck-btn svg { width: 12px; height: 12px; }
     }
   </style>
 </head>
